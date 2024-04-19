@@ -1,11 +1,11 @@
-var Range = require("./")
-var union = Range.union
-var compareBeginToBegin = Range.compareBeginToBegin
-var compareBeginToEnd = Range.compareBeginToEnd
-var compareEndToEnd = Range.compareEndToEnd
-var concat = Array.prototype.concat.bind(Array.prototype)
-var EMPTY_ARR = Array.prototype
-module.exports = RangeTree
+var Range = require("./");
+var union = Range.union;
+var compareBeginToBegin = Range.compareBeginToBegin;
+var compareBeginToEnd = Range.compareBeginToEnd;
+var compareEndToEnd = Range.compareEndToEnd;
+var concat = Array.prototype.concat.bind(Array.prototype);
+var EMPTY_ARR = Array.prototype;
+module.exports = RangeTree;
 
 /**
  * Create an interval tree node.
@@ -31,22 +31,27 @@ module.exports = RangeTree
  * @param {RangeTree} right
  */
 function RangeTree(keys, left, right) {
-  // Store the longest range first.
-  if (Array.isArray(keys)) this.keys = keys.slice().sort(reverseCompareEndToEnd)
-  else this.keys = [keys]
+	// Store the longest range first.
 
-  this.left = left || null
-  this.right = right || null
+	// Store the longest range first.
+	if (Array.isArray(keys)) {
+		this.keys = keys.slice().sort(reverseCompareEndToEnd);
+	} else {
+		this.keys = [keys];
+	}
 
-  // Remember, the topmost key has the longest range.
-  var a = this.left ? this.left.range : this.keys[0]
-  var b = this.right ? union(this.keys[0], this.right.range) : this.keys[0]
-  this.range = union(a, b)
+	this.left = left || null;
+	this.right = right || null;
+
+	// Remember, the topmost key has the longest range.
+	var a = this.left ? this.left.range : this.keys[0];
+	var b = this.right ? union(this.keys[0], this.right.range) : this.keys[0];
+	this.range = union(a, b);
 }
 
 /**
  * Create an interval tree (implemented as an augmented binary search tree)
- * from an array of ranges.  
+ * from an array of ranges.
  * Returns a [`RangeTree`](#RangeTree) you can search on.
  *
  * If you need to relate the found ranges to other data, add some properties
@@ -61,31 +66,34 @@ function RangeTree(keys, left, right) {
  * @method from
  * @param {Range[]} ranges
  */
-RangeTree.from = function(ranges) {
-  ranges = ranges.filter(isNotEmpty)
-  ranges = ranges.sort(compareBeginToBegin)
-  ranges = ranges.map(arrayify)
-  ranges = ranges.reduce(dedupe, [])
-  return this.new(ranges)
-}
+RangeTree.from = function (ranges) {
+	ranges = ranges.filter(isNotEmpty);
+	ranges = ranges.sort(compareBeginToBegin);
+	ranges = ranges.map(arrayify);
+	ranges = ranges.reduce(dedupe, []);
+	return this.new(ranges);
+};
 
-RangeTree.new = function(ranges) {
-  switch (ranges.length) {
-    case 0: return new this(new Range)
-    case 1: return new this(ranges[0])
-    case 2: return new this(ranges[0], null, new this(ranges[1]))
+RangeTree.new = function (ranges) {
+	switch (ranges.length) {
+		case 0:
+			return new this(new Range());
+		case 1:
+			return new this(ranges[0]);
+		case 2:
+			return new this(ranges[0], null, new this(ranges[1]));
 
-    default:
-      var middle = Math.floor(ranges.length / 2)
-      var left = this.new(ranges.slice(0, middle))
-      var right = this.new(ranges.slice(middle + 1))
-      return new this(ranges[middle], left, right)
-  }
-}
+		default:
+			var middle = Math.floor(ranges.length / 2);
+			var left = this.new(ranges.slice(0, middle));
+			var right = this.new(ranges.slice(middle + 1));
+			return new this(ranges[middle], left, right);
+	}
+};
 
 /**
  * Search for ranges that include the given value or, given a range, intersect
- * with it.  
+ * with it.
  * Returns an array of matches or an empty one if no range contained or
  * intersected with the given value.
  *
@@ -98,61 +106,82 @@ RangeTree.new = function(ranges) {
  * @method search
  * @param {Object} valueOrRange
  */
-RangeTree.prototype.search = function(value) {
-  if (value instanceof Range) return this.searchByRange(value)
-  else return this.searchByValue(value)
-}
+RangeTree.prototype.search = function (value) {
+	if (value instanceof Range) {
+		return this.searchByRange(value);
+	} else {
+		return this.searchByValue(value);
+	}
+};
 
-RangeTree.prototype.searchByValue = function(value) {
-  if (!this.range.contains(value)) return EMPTY_ARR
+RangeTree.prototype.searchByValue = function (value) {
+	if (!this.range.contains(value)) {
+		return EMPTY_ARR;
+	}
 
-  var ownPosition = this.keys[0].compareBegin(value)
+	var ownPosition = this.keys[0].compareBegin(value);
 
-  return concat(
-    this.left ? this.left.searchByValue(value) : EMPTY_ARR,
-    ownPosition <= 0 ? this.searchOwnByValue(value) : EMPTY_ARR,
-    this.right && ownPosition < 0 ? this.right.searchByValue(value) : EMPTY_ARR
-  )
-}
+	return concat(
+		this.left ? this.left.searchByValue(value) : EMPTY_ARR,
+		ownPosition <= 0 ? this.searchOwnByValue(value) : EMPTY_ARR,
+		this.right && ownPosition < 0 ? this.right.searchByValue(value) : EMPTY_ARR,
+	);
+};
 
-RangeTree.prototype.searchByRange = function(range) {
-  if (!this.range.intersects(range)) return EMPTY_ARR
+RangeTree.prototype.searchByRange = function (range) {
+	if (!this.range.intersects(range)) {
+		return EMPTY_ARR;
+	}
 
-  var ownPosition = compareBeginToEnd(this.keys[0], range)
+	var ownPosition = compareBeginToEnd(this.keys[0], range);
 
-  return concat(
-    this.left ? this.left.searchByRange(range) : EMPTY_ARR,
-    ownPosition <= 0 ? this.searchOwnByRange(range) : EMPTY_ARR,
-    this.right && ownPosition < 0 ? this.right.searchByRange(range) : EMPTY_ARR
-  )
-}
+	return concat(
+		this.left ? this.left.searchByRange(range) : EMPTY_ARR,
+		ownPosition <= 0 ? this.searchOwnByRange(range) : EMPTY_ARR,
+		this.right && ownPosition < 0 ? this.right.searchByRange(range) : EMPTY_ARR,
+	);
+};
 
 // Sort ranges in ascending order for beauty. O:)
-RangeTree.prototype.searchOwnByValue = function(value) {
-  return take(this.keys, function(r) { return r.contains(value) }).reverse()
-}
+RangeTree.prototype.searchOwnByValue = function (value) {
+	return take(this.keys, function (r) {
+		return r.contains(value);
+	}).reverse();
+};
 
-RangeTree.prototype.searchOwnByRange = function(range) {
-  return take(this.keys, function(r) { return r.intersects(range) }).reverse()
-}
+RangeTree.prototype.searchOwnByRange = function (range) {
+	return take(this.keys, function (r) {
+		return r.intersects(range);
+	}).reverse();
+};
 
 function dedupe(ranges, range) {
-  var last = ranges[ranges.length - 1]
+	var last = ranges[ranges.length - 1];
 
-  if (last != null && compareBeginToBegin(last[0], range[0]) === 0)
-    last.push(range[0])
-  else
-    ranges.push(range)
+	if (last != null && compareBeginToBegin(last[0], range[0]) === 0) {
+		last.push(range[0]);
+	} else {
+		ranges.push(range);
+	}
 
-  return ranges
+	return ranges;
 }
 
 function take(arr, fn) {
-  var values = []
-  for (var i = 0; i < arr.length && fn(arr[i], i); ++i) values.push(arr[i])
-  return values
+	var values = [];
+
+	for (var i = 0; i < arr.length && fn(arr[i], i); ++i) {
+		values.push(arr[i]);
+	}
+	return values;
 }
 
-function arrayify(obj) { return [obj] }
-function isNotEmpty(range) { return !range.isEmpty() }
-function reverseCompareEndToEnd(a, b) { return compareEndToEnd(a, b) * -1 }
+function arrayify(obj) {
+	return [obj];
+}
+function isNotEmpty(range) {
+	return !range.isEmpty();
+}
+function reverseCompareEndToEnd(a, b) {
+	return compareEndToEnd(a, b) * -1;
+}

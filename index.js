@@ -1,8 +1,8 @@
-var INVALID_BOUNDS_ERR = "Invalid range bounds: "
-module.exports = Range
+var INVALID_BOUNDS_ERR = "Invalid range bounds: ";
+module.exports = Range;
 
 /**
- * Create a new range object with the given begin and end endpoints.  
+ * Create a new range object with the given begin and end endpoints.
  * You can also pass a two character string for bounds. Defaults to` "[]"` for
  * an all inclusive range.
  *
@@ -29,51 +29,62 @@ module.exports = Range
  * @param {String} [bounds="[]"]
  */
 function Range(begin, end, bounds) {
-  if (!(this instanceof Range)) return new Range(begin, end, bounds)
+	if (!(this instanceof Range)) {
+		return new Range(begin, end, bounds);
+	}
 
-  /**
-   * Range's beginning, or left endpoint.
-   *
-   * @property {Object} begin
-   */
-  this.begin = begin
+	/**
+	 * Range's beginning, or left endpoint.
+	 *
+	 * @property {Object} begin
+	 */
 
-  /**
-   * Range's end, or right endpoint.
-   *
-   * @property {Object} end
-   */
-  this.end = end
+	/**
+	 * Range's beginning, or left endpoint.
+	 *
+	 * @property {Object} begin
+	 */
+	this.begin = begin;
 
-  /**
-   * Range's bounds.
-   *
-   * Bounds signify whether the range includes or excludes that particular
-   * endpoint.
-   *
-   * Pair | Meaning
-   * -----|--------
-   * `()` | open
-   * `[]` | closed
-   * `[)` | left-closed, right-open
-   * `(]` | left-open, right-closed
-   *
-   * @example
-   * new Range(1, 5).bounds // => "[]"
-   * new Range(1, 5, "[)").bounds // => "[)"
-   *
-   * @property {String} bounds
-   */
-   this.bounds = bounds = bounds === undefined ? "[]" : bounds
-   if (!isValidBounds(bounds)) throw new RangeError(INVALID_BOUNDS_ERR + bounds)
+	/**
+	 * Range's end, or right endpoint.
+	 *
+	 * @property {Object} end
+	 */
+	this.end = end;
+
+	/**
+	 * Range's bounds.
+	 *
+	 * Bounds signify whether the range includes or excludes that particular
+	 * endpoint.
+	 *
+	 * Pair | Meaning
+	 * -----|--------
+	 * `()` | open
+	 * `[]` | closed
+	 * `[)` | left-closed, right-open
+	 * `(]` | left-open, right-closed
+	 *
+	 * @example
+	 * new Range(1, 5).bounds // => "[]"
+	 * new Range(1, 5, "[)").bounds // => "[)"
+	 *
+	 * @property {String} bounds
+	 */
+	this.bounds = bounds = bounds === undefined ? "[]" : bounds;
+
+	if (!isValidBounds(bounds)) {
+		throw new RangeError(INVALID_BOUNDS_ERR + bounds);
+	}
 }
 
-Range.prototype.begin = undefined
-Range.prototype.end = undefined
-Range.prototype.bounds = "[]"
+Range.prototype.begin = undefined;
+Range.prototype.end = undefined;
+Range.prototype.bounds = "[]";
 
 /**
- * Compares this range's beginning with the given value.  
+ * Compares this range's beginning with the given value.
  * Returns `-1` if this range begins before the given value, `0` if they're
  * equal and `1` if this range begins after the given value.
  *
@@ -89,14 +100,14 @@ Range.prototype.bounds = "[]"
  * @method compareBegin
  * @param {Object} begin
  */
-Range.prototype.compareBegin = function(begin) {
-  var a = this.begin === null ? -Infinity : this.begin
-  var b = begin === null ? -Infinity : begin
-  return compare(a, b) || (this.bounds[0] == "[" ? 0 : 1)
-}
+Range.prototype.compareBegin = function (begin) {
+	var a = this.begin === null ? -Infinity : this.begin;
+	var b = begin === null ? -Infinity : begin;
+	return compare(a, b) || (this.bounds[0] == "[" ? 0 : 1);
+};
 
 /**
- * Compares this range's end with the given value.  
+ * Compares this range's end with the given value.
  * Returns `-1` if this range ends before the given value, `0` if they're
  * equal and `1` if this range ends after the given value.
  *
@@ -112,14 +123,14 @@ Range.prototype.compareBegin = function(begin) {
  * @method compareEnd
  * @param {Object} end
  */
-Range.prototype.compareEnd = function(end) {
-  var a = this.end === null ? Infinity : this.end
-  var b = end === null ? Infinity : end
-  return compare(a, b) || (this.bounds[1] == "]" ? 0 : -1)
-}
+Range.prototype.compareEnd = function (end) {
+	var a = this.end === null ? Infinity : this.end;
+	var b = end === null ? Infinity : end;
+	return compare(a, b) || (this.bounds[1] == "]" ? 0 : -1);
+};
 
 /**
- * Check whether the range is empty.  
+ * Check whether the range is empty.
  * An empty range is one where either of the endpoints is `undefined` (like `new
  * Range`) or a range with two equivalent, but exculsive endpoints
  * (`new Range(5, 5, "[)")`).
@@ -135,15 +146,18 @@ Range.prototype.compareEnd = function(end) {
  *
  * @method isEmpty
  */
-Range.prototype.isEmpty = function() {
-  var a = this.begin === null ? -Infinity : this.begin
-  var b = this.end === null ? Infinity : this.end
-  if (a === undefined || b === undefined) return true
-  return this.bounds != "[]" && compare(a, b) === 0
-}
+Range.prototype.isEmpty = function () {
+	var a = this.begin === null ? -Infinity : this.begin;
+	var b = this.end === null ? Infinity : this.end;
+
+	if (a === undefined || b === undefined) {
+		return true;
+	}
+	return this.bounds != "[]" && compare(a, b) === 0;
+};
 
 /**
- * Check whether the range is bounded.  
+ * Check whether the range is bounded.
  * A bounded range is one where neither endpoint is `null` or `Infinity`. An
  * empty range is considered bounded.
  *
@@ -156,19 +170,21 @@ Range.prototype.isEmpty = function() {
  *
  * @method isBounded
  */
-Range.prototype.isBounded = function() {
-  if (this.begin === undefined || this.end === undefined) return true
-  return !(isInfinity(this.begin) || isInfinity(this.end))
-}
+Range.prototype.isBounded = function () {
+	if (this.begin === undefined || this.end === undefined) {
+		return true;
+	}
+	return !(isInfinity(this.begin) || isInfinity(this.end));
+};
 
 /**
  * @method isFinite
  * @alias isBounded
  */
-Range.prototype.isFinite = Range.prototype.isBounded
+Range.prototype.isFinite = Range.prototype.isBounded;
 
 /**
- * Check whether the range is unbounded.  
+ * Check whether the range is unbounded.
  * An unbounded range is one where either endpoint is `null` or `Infinity`. An
  * empty range is not considered unbounded.
  *
@@ -181,18 +197,18 @@ Range.prototype.isFinite = Range.prototype.isBounded
  *
  * @method isUnbounded
  */
-Range.prototype.isUnbounded = function() {
-  return !this.isBounded()
-}
+Range.prototype.isUnbounded = function () {
+	return !this.isBounded();
+};
 
 /**
  * @method isInfinite
  * @alias isUnbounded
  */
-Range.prototype.isInfinite = Range.prototype.isUnbounded
+Range.prototype.isInfinite = Range.prototype.isUnbounded;
 
 /**
- * Check if a given value is contained within this range.  
+ * Check if a given value is contained within this range.
  * Returns `true` or `false`.
  *
  * @example
@@ -203,18 +219,18 @@ Range.prototype.isInfinite = Range.prototype.isUnbounded
  * @method contains
  * @param {Object} value
  */
-Range.prototype.contains = function(value) {
-  var a = this.begin
-  var b = this.end
+Range.prototype.contains = function (value) {
+	var a = this.begin;
+	var b = this.end;
 
-  return (
-    (b === null || (this.bounds[1] === "]" ? value <= b : value < b)) &&
-    (a === null || (this.bounds[0] === "[" ? a <= value : a < value))
-  )
-}
+	return (
+		(b === null || (this.bounds[1] === "]" ? value <= b : value < b)) &&
+		(a === null || (this.bounds[0] === "[" ? a <= value : a < value))
+	);
+};
 
 /**
- * Check if this range intersects with another.  
+ * Check if this range intersects with another.
  * Returns `true` or `false`.
  *
  * Ranges that have common points intersect. Ranges that are consecutive and
@@ -230,15 +246,20 @@ Range.prototype.contains = function(value) {
  * @method intersects
  * @param {Object} other
  */
-Range.prototype.intersects = function(other) {
-  if (this.isEmpty()) return false
-  if (other.isEmpty()) return false
+Range.prototype.intersects = function (other) {
+	if (this.isEmpty()) {
+		return false;
+	}
 
-  return (
-    Range.compareBeginToEnd(this, other) <= 0 &&
-    Range.compareBeginToEnd(other, this) <= 0
-  )
-}
+	if (other.isEmpty()) {
+		return false;
+	}
+
+	return (
+		Range.compareBeginToEnd(this, other) <= 0 &&
+		Range.compareBeginToEnd(other, this) <= 0
+	);
+};
 
 /**
  * Returns an array of the endpoints and bounds.
@@ -251,9 +272,9 @@ Range.prototype.intersects = function(other) {
  *
  * @method valueOf
  */
-Range.prototype.valueOf = function() {
-  return [this.begin, this.end, this.bounds]
-}
+Range.prototype.valueOf = function () {
+	return [this.begin, this.end, this.bounds];
+};
 
 /**
  * Stringifies a range in `[a,b]` format.
@@ -268,15 +289,15 @@ Range.prototype.valueOf = function() {
  *
  * @method toString
  */
-Range.prototype.toString = function() {
-  // FIXME: How to serialize an empty range with undefined endpoints?
-  var a = stringify(this.begin)
-  var b = stringify(this.end)
-  return this.bounds[0] + a + "," + b + this.bounds[1]
-}
+Range.prototype.toString = function () {
+	// FIXME: How to serialize an empty range with undefined endpoints?
+	var a = stringify(this.begin);
+	var b = stringify(this.end);
+	return this.bounds[0] + a + "," + b + this.bounds[1];
+};
 
 /**
- * Stringifies the range when passing it to `JSON.stringify`.  
+ * Stringifies the range when passing it to `JSON.stringify`.
  * This way you don't need to manually call `toString` when stringifying.
  *
  * @example
@@ -285,11 +306,11 @@ Range.prototype.toString = function() {
  * @method toJSON
  * @alias toString
  */
-Range.prototype.toJSON = Range.prototype.toString
-Range.prototype.inspect = Range.prototype.toString
+Range.prototype.toJSON = Range.prototype.toString;
+Range.prototype.inspect = Range.prototype.toString;
 
 /**
- * Compares two range's beginnings.  
+ * Compares two range's beginnings.
  * Returns `-1` if `a` begins before `b` begins, `0` if they're equal and `1`
  * if `a` begins after `b`.
  *
@@ -303,15 +324,19 @@ Range.prototype.inspect = Range.prototype.toString
  * @param {Object} a
  * @param {Object} b
  */
-Range.compareBeginToBegin = function(a, b) {
-  var aBegin = a.begin === null ? -Infinity : a.begin
-  var bBegin = b.begin === null ? -Infinity : b.begin
-  if (a.bounds[0] === b.bounds[0]) return compare(aBegin, bBegin)
-  else return compare(aBegin, bBegin) || (b.bounds[0] === "(" ? -1 : 1)
-}
+Range.compareBeginToBegin = function (a, b) {
+	var aBegin = a.begin === null ? -Infinity : a.begin;
+	var bBegin = b.begin === null ? -Infinity : b.begin;
+
+	if (a.bounds[0] === b.bounds[0]) {
+		return compare(aBegin, bBegin);
+	} else {
+		return compare(aBegin, bBegin) || (b.bounds[0] === "(" ? -1 : 1);
+	}
+};
 
 /**
- * Compares the first range's beginning to the second's end.  
+ * Compares the first range's beginning to the second's end.
  * Returns `<0` if `a` begins before `b` ends, `0` if one starts where the other
  * ends and `>1` if `a` begins after `b` ends.
  *
@@ -325,15 +350,19 @@ Range.compareBeginToBegin = function(a, b) {
  * @param {Object} a
  * @param {Object} b
  */
-Range.compareBeginToEnd = function(a, b) {
-  var aBegin = a.begin === null ? -Infinity : a.begin
-  var bEnd = b.end === null ? Infinity : b.end
-  if (a.bounds[0] === "[" && b.bounds[1] === "]") return compare(aBegin, bEnd)
-  else return compare(aBegin, bEnd) || 1
-}
+Range.compareBeginToEnd = function (a, b) {
+	var aBegin = a.begin === null ? -Infinity : a.begin;
+	var bEnd = b.end === null ? Infinity : b.end;
+
+	if (a.bounds[0] === "[" && b.bounds[1] === "]") {
+		return compare(aBegin, bEnd);
+	} else {
+		return compare(aBegin, bEnd) || 1;
+	}
+};
 
 /**
- * Compares two range's endings.  
+ * Compares two range's endings.
  * Returns `-1` if `a` ends before `b` ends, `0` if they're equal and `1`
  * if `a` ends after `b`.
  *
@@ -347,12 +376,16 @@ Range.compareBeginToEnd = function(a, b) {
  * @param {Object} a
  * @param {Object} b
  */
-Range.compareEndToEnd = function(a, b) {
-  var aEnd = a.end === null ? Infinity : a.end
-  var bEnd = b.end === null ? Infinity : b.end
-  if (a.bounds[1] === b.bounds[1]) return compare(aEnd, bEnd)
-  else return compare(aEnd, bEnd) || (a.bounds[1] === ")" ? -1 : 1)
-}
+Range.compareEndToEnd = function (a, b) {
+	var aEnd = a.end === null ? Infinity : a.end;
+	var bEnd = b.end === null ? Infinity : b.end;
+
+	if (a.bounds[1] === b.bounds[1]) {
+		return compare(aEnd, bEnd);
+	} else {
+		return compare(aEnd, bEnd) || (a.bounds[1] === ")" ? -1 : 1);
+	}
+};
 
 /**
  * Parses a string stringified by
@@ -375,17 +408,27 @@ Range.compareEndToEnd = function(a, b) {
  * @param {String} range
  * @param {Function} [parseEndpoint]
  */
-Range.parse = function(range, parse) {
-  var endpoints = range.slice(1, -1).split(",", 2)
-  var begin = endpoints[0] ? parse ? parse(endpoints[0]) : endpoints[0] : null
-  var end = endpoints[1] ? parse ? parse(endpoints[1]) : endpoints[1] : null
-  if (parse === Number && begin === null) begin = -Infinity
-  if (parse === Number && end === null) end = Infinity
-  return new Range(begin, end, range[0] + range[range.length - 1])
-}
+Range.parse = function (range, parse) {
+	var endpoints = range.slice(1, -1).split(",", 2);
+	var begin = endpoints[0]
+		? parse
+			? parse(endpoints[0])
+			: endpoints[0]
+		: null;
+	var end = endpoints[1] ? (parse ? parse(endpoints[1]) : endpoints[1]) : null;
+
+	if (parse === Number && begin === null) {
+		begin = -Infinity;
+	}
+
+	if (parse === Number && end === null) {
+		end = Infinity;
+	}
+	return new Range(begin, end, range[0] + range[range.length - 1]);
+};
 
 /**
- * Merges two ranges and returns a range that encompasses both of them.  
+ * Merges two ranges and returns a range that encompasses both of them.
  * The ranges don't have to be intersecting.
  *
  * @example
@@ -402,32 +445,43 @@ Range.parse = function(range, parse) {
  * @param {Range} a
  * @param {Range} b
  */
-Range.union = function(a, b) {
-  var aIsEmpty = a.isEmpty()
-  var bIsEmpty = b.isEmpty()
-  if (aIsEmpty && bIsEmpty) return new Range
-  else if (aIsEmpty) return b
-  else if (bIsEmpty) return a
+Range.union = function (a, b) {
+	var aIsEmpty = a.isEmpty();
+	var bIsEmpty = b.isEmpty();
 
-  var begin = Range.compareBeginToBegin(a, b) <= 0 ? a : b
-  var end = Range.compareEndToEnd(a, b) <= 0 ? b : a
-  return new Range(begin.begin, end.end, begin.bounds[0] + end.bounds[1])
-}
+	if (aIsEmpty && bIsEmpty) {
+		return new Range();
+	} else if (aIsEmpty) {
+		return b;
+	} else if (bIsEmpty) {
+		return a;
+	}
+
+	var begin = Range.compareBeginToBegin(a, b) <= 0 ? a : b;
+	var end = Range.compareEndToEnd(a, b) <= 0 ? b : a;
+	return new Range(begin.begin, end.end, begin.bounds[0] + end.bounds[1]);
+};
 
 function isInfinity(value) {
-  return value === null || value === Infinity || value === -Infinity
+	return value === null || value === Infinity || value === -Infinity;
 }
 
 function isValidBounds(bounds) {
-   switch (bounds) {
-     case "()":
-     case "[]":
-     case "[)":
-     case "(]": return true
-     default: return false
-   }
+	switch (bounds) {
+		case "()":
+		case "[]":
+		case "[)":
+		case "(]":
+			return true;
+		default:
+			return false;
+	}
 }
 
 // The less-than operator ensures coercion with valueOf.
-function compare(a, b) { return a < b ? -1 : b < a ? 1 : 0 }
-function stringify(value) { return isInfinity(value) ? "" : String(value) }
+function compare(a, b) {
+	return a < b ? -1 : b < a ? 1 : 0;
+}
+function stringify(value) {
+	return isInfinity(value) ? "" : String(value);
+}
