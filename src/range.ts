@@ -20,6 +20,10 @@ export namespace Range {
 	}
 }
 
+function isObject(value: unknown) {
+	return typeof value === "object" && value !== null;
+}
+
 export function isRange(value: unknown): value is Range<any> {
 	return value instanceof Range;
 }
@@ -31,7 +35,7 @@ export function isNumericRange(value: unknown): value is Range<number> {
 }
 
 export function isComparableDate(value: any): value is ComparableDateObject {
-	return "isBefore" in value;
+	return isObject(value) && "isBefore" in value;
 }
 
 function isInfinity(value: any) {

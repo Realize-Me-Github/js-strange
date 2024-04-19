@@ -17,6 +17,9 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BoundedRange = exports.Range = exports.isNumericRangeLiteral = exports.isRangeLiteral = exports.isComparableDate = exports.isNumericRange = exports.isRange = void 0;
 var INVALID_BOUNDS_ERR = "Invalid range bounds: ";
+function isObject(value) {
+    return typeof value === "object" && value !== null;
+}
 function isRange(value) {
     return value instanceof Range;
 }
@@ -26,7 +29,7 @@ function isNumericRange(value) {
 }
 exports.isNumericRange = isNumericRange;
 function isComparableDate(value) {
-    return "isBefore" in value;
+    return isObject(value) && "isBefore" in value;
 }
 exports.isComparableDate = isComparableDate;
 function isInfinity(value) {
