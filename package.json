@@ -25,16 +25,16 @@
 		"email": "andri@dot.ee",
 		"url": "http://themoll.com"
 	},
-	"type": "module",
-	"main": "./lib/index.js",
+	"type": "commonjs",
+	"main": "./dist/index.js",
 	"files": [
-		"lib/",
+		"dist/",
 		"package.json",
 		"LICENSE.md",
 		"README.md"
 	],
 	"scripts": {
-		"build": "tsup",
+		"build": "tsc",
 		"format": "prettier .",
 		"lint": "eslint . .*js --max-warnings 0",
 		"prepare": "husky",
@@ -45,6 +45,7 @@
 		"*": "prettier --ignore-unknown --write"
 	},
 	"devDependencies": {
+		"@swc/core": "^1.4.16",
 		"@types/eslint": "^8.56.10",
 		"@typescript-eslint/eslint-plugin": "^7.7.0",
 		"@typescript-eslint/parser": "^7.7.0",
