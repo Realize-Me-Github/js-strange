@@ -63,10 +63,10 @@
 		"prettier-plugin-packagejson": "^2.5.0",
 		"typescript": "^5.4.5"
 	},
-	"packageManager": "pnpm@8.15.4",
 	"engines": {
 		"node": ">=18"
 	},
+	"packageManager": "yarn@4.0.2",
 	"publishConfig": {
 		"provenance": true
 	},
