@@ -5,7 +5,7 @@ module.exports = {
 		node: true,
 	},
 	extends: ["eslint:recommended", "plugin:n/recommended"],
-	ignorePatterns: ["!.*", "lib", "node_modules", "pnpm-lock.yaml"],
+	ignorePatterns: ["!.*", "dist", "node_modules", "pnpm-lock.yaml"],
 	overrides: [
 		{
 			extends: ["plugin:@typescript-eslint/recommended"],
